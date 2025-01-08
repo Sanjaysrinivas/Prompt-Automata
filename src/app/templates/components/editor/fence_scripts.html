@@ -1,0 +1,30 @@
+<!-- CodeMirror -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/xml/xml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+
+<!-- Fence Editor Modules -->
+<script type="module" src="{{ url_for('static', filename='js/fence/fence-core.js') }}"></script>
+<script type="module" src="{{ url_for('static', filename='js/fence/fence-ui.js') }}"></script>
+<script type="module" src="{{ url_for('static', filename='js/fence/fence-api.js') }}"></script>
+<script type="module" src="{{ url_for('static', filename='js/fence/fence-preview.js') }}"></script>
+<script type="module" src="{{ url_for('static', filename='js/fence/fence-references.js') }}"></script>
+<script type="module" src="{{ url_for('static', filename='js/fence/fence-format.js') }}"></script>
+<script type="module" src="{{ url_for('static', filename='js/fence/fence-events.js') }}"></script>
+<script type="module" src="{{ url_for('static', filename='js/fence/fence-library.js') }}"></script>
+<script type="module" src="{{ url_for('static', filename='js/fence/fence-tokens.js') }}"></script>
+<script type="module" src="{{ url_for('static', filename='js/block-library.js') }}"></script>
+<script type="module" src="{{ url_for('static', filename='js/token_status.js') }}"></script>
+
+<script type="module">
+    import { initializeFenceEditor } from "{{ url_for('static', filename='js/fence/fence-events.js') }}";
+    import { initializeRefreshButtons } from "{{ url_for('static', filename='js/fence/fence-tokens.js') }}";
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        // Initialize fence editor after DOM is loaded
+        initializeFenceEditor();
+        // Initialize refresh buttons
+        initializeRefreshButtons();
+    });
+</script>

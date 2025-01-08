@@ -1,0 +1,151 @@
+<!-- Workspace Component -->
+<form id="prompt-form" class="space-y-6">
+    {% if prompt %}
+    <input type="hidden" name="id" id="prompt-id" value="{{ prompt.id }}">
+    {% endif %}
+
+    <!-- Title Field -->
+    <div>
+        <label for="prompt-title" class="block text-sm font-medium text-gray-700">Title</label>
+        <input type="text" name="title" id="prompt-title" required
+            value="{{ prompt.title if prompt else '' }}"
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+    </div>
+
+    <!-- Description Field -->
+    <div>
+        <label for="prompt-description" class="block text-sm font-medium text-gray-700">Description</label>
+        <textarea name="description" id="prompt-description" rows="2"
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">{{ prompt.description if prompt else '' }}</textarea>
+        <p class="mt-1 text-sm text-gray-500">
+            Brief description of what this prompt does.
+        </p>
+    </div>
+
+    <!-- Tags Field -->
+    <div>
+        <label for="prompt-tags" class="block text-sm font-medium text-gray-700">Tags</label>
+        <input type="text" name="tags" id="prompt-tags"
+            value="{{ prompt.tags|join(', ') if prompt else '' }}"
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+        <p class="mt-1 text-sm text-gray-500">
+            Comma-separated tags (e.g., "code-review, documentation, bug-fix")
+        </p>
+    </div>
+
+    <!-- Template Setting and API Key Selection -->
+    <div class="flex items-center gap-8 mb-4">
+        <div class="flex items-center">
+            <input type="checkbox" id="save-template" name="save_template"
+                class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+            <label for="save-template" class="ml-2 block text-sm text-gray-700">Save as Template</label>
+        </div>
+        
+        <div class="flex items-center gap-4">
+            <!-- Provider Selection -->
+            <div class="relative w-48">
+                <select id="provider-select" class="block w-full px-3 py-2 text-sm border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 appearance-none cursor-pointer">
+                    <option value="">Choose a provider</option>
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                        <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Model Selection (Hidden by default) -->
+            <div id="model-select-container" class="relative w-48 hidden">
+                <select id="model-select" class="block w-full px-3 py-2 text-sm border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 appearance-none cursor-pointer">
+                    <option value="">Choose a model</option>
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                        <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Global Fencing Controls -->
+    <div class="bg-gray-50 p-4 rounded-lg mb-6">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <div class="flex items-center">
+                    <input type="checkbox" id="use-global-fencing" 
+                        class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                    <label for="use-global-fencing" class="ml-2 text-sm font-medium text-gray-700">
+                        Use Global Fencing
+                    </label>
+                </div>
+                <div id="global-fence-format-container" class="hidden">
+                    <select id="global-fence-format" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                        <option value="xml_tags">XML Tags</option>
+                        <option value="triple_quotes">Triple Quotes</option>
+                        <option value="curly_braces">Curly Braces</option>
+                        <option value="markdown">Markdown</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="text-sm text-gray-500 flex">
+            <i class="fas fa-info-circle mt-4 -ml-1"></i>
+            <div>
+                <p class="mt-3 mb-3 ml-2">Global fencing will override individual fence formats</p>
+                <p class="mt-2 mb-4 -ml-4">Note: When using XML tags format, tags will be applied to fence names instead of content</p>
+            </div>
+        </div>
+    </div>
+
+     <!-- Token Counter -->
+    {% include "components/editor/token_counter_card.html" %}
+    
+    <!-- Multiple Fences Section -->
+    <div class="fences-container">
+        <div class="flex justify-between items-center mb-4">
+            <button type="button" id="add-fence-btn" 
+                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <i class="fas fa-plus mr-2"></i> Add New Fence
+            </button>
+        </div>
+        
+        <div id="fences-list" class="space-y-4">
+            {% if prompt and prompt.fences %}
+                {% for fence in prompt.fences %}
+                    {% with position = loop.index0 %}
+                        {% include "components/editor/fence_block.html" %}
+                    {% endwith %}
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Fence Block Template -->
+    <template id="fence-block-template">
+        {% with position = 0 %}
+            {% include "components/editor/fence_block.html" %}
+        {% endwith %}
+    </template>
+
+    <!-- Submit Button -->
+    <div class="flex justify-between items-center">
+        <div class="flex space-x-2">
+            <button type="button" id="preview-btn"
+                class="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <i class="fas fa-eye mr-2"></i>Preview
+            </button>
+            <button type="button" onclick="toggleBlockLibrary()" 
+                class="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <i class="fas fa-book mr-2"></i>
+                Block Library
+            </button>
+        </div>
+        <button type="submit" id="save-btn" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            <i class="fas fa-bolt mr-2"></i>Save & Generate
+        </button>
+    </div>
+</form>
+
+<!-- Include the editor script -->
+<script src="{{ url_for('static', filename='js/prompt_editor.js') }}"></script>

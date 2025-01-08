@@ -1,0 +1,35 @@
+<!-- Token Status Dialog Component -->
+<div id="token-status-dialog" class="token-status-dialog">
+    <div class="token-status-content">
+        <div class="token-status-header">
+            <h3>Token Count</h3>
+            <button type="button" class="token-status-minimize" onclick="try { if (typeof toggleTokenDialog === 'function') toggleTokenDialog(); } catch (e) { console.error('Failed to toggle token dialog:', e); }">
+                <i class="fas fa-minus"></i>
+            </button>
+        </div>
+        <div class="token-status-body">
+            <div class="model-capacity">
+                <div class="capacity-label">
+                    <span>Total Tokens:</span>
+                    <span id="total-token-count">0</span>
+                </div>
+                <div class="capacity-bar-container">
+                    <div class="capacity-bar">
+                        <div id="capacity-fill" class="capacity-fill"></div>
+                    </div>
+                    <div class="model-limits">
+                        <span class="limit-marker" style="left: 16%">32K</span>
+                        <span class="limit-marker" style="left: 64%">128K</span>
+                        <span class="limit-marker" style="right: 0">200K</span>
+                    </div>
+                </div>
+            </div>
+            <div class="block-breakdown">
+                <h4>Block Breakdown</h4>
+                <div id="block-list" class="block-list">
+                    <!-- Blocks will be added here dynamically -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,75 @@
+{% macro file_picker() %}
+<div class="file-picker-component">
+    <div class="file-browser">
+        <div class="file-browser-header">
+            <h3>File Browser</h3>
+            <div class="file-browser-controls">
+                <div class="search-box">
+                    <input type="text" id="fileSearch" placeholder="Search files..." class="search-input">
+                    <select id="fileFilter" class="filter-select">
+                        <option value="all">All Files</option>
+                        <option value="python">.py</option>
+                        <option value="markdown">.md</option>
+                        <option value="text">.txt</option>
+                        <option value="json">.json</option>
+                    </select>
+                </div>
+                <button type="button" class="refresh-files-btn" title="Refresh">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div class="breadcrumb-nav" id="breadcrumbNav">
+            <button class="breadcrumb-item root" title="Home Directory">
+                <i class="fas fa-home"></i>
+            </button>
+            <!-- Breadcrumbs will be dynamically added here -->
+        </div>
+
+        <div class="file-browser-split">
+            <div class="file-list-container">
+                <div class="file-list-header">
+                    <div class="header-name">Name</div>
+                    <div class="header-size">Size</div>
+                    <div class="header-modified">Modified</div>
+                </div>
+                <div class="file-list" id="fileList">
+                    <!-- Files will be populated here via JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <div class="selected-files">
+            <div>Selected Files:</div>
+            <div class="selected-files-list" id="selectedFilesList">
+                <!-- Selected files will be shown here -->
+            </div>
+        </div>
+    </div>
+
+    <div class="file-preview" id="filePreview">
+        <div class="file-preview-header">
+            <div class="preview-title">
+                <h3>Preview</h3>
+                <span class="file-path" id="previewFilePath"></span>
+            </div>
+            <div class="preview-controls">
+                <select id="syntaxTheme" class="theme-select">
+                    <option value="light">Light Theme</option>
+                    <option value="dark">Dark Theme</option>
+                </select>
+                <button type="button" class="copy-content-btn" title="Copy Content">
+                    <i class="fas fa-copy"></i>
+                </button>
+                <button type="button" class="insert-button" id="insertButton" disabled>
+                    Insert Selected
+                </button>
+            </div>
+        </div>
+        <div class="preview-content">
+            <pre id="previewCode" class="preview-code"></pre>
+        </div>
+    </div>
+</div>
+{% endmacro %}

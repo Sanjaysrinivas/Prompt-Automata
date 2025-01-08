@@ -1,0 +1,196 @@
+/* Token Status Dialog Styles */
+.token-status-dialog {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 300px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--input-border);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px var(--modal-shadow);
+    z-index: 1000;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.token-status-dialog.minimized {
+    transform: translateY(calc(100% - 40px));
+    opacity: 0.8;
+}
+
+.token-status-dialog.minimized:hover {
+    opacity: 1;
+}
+
+.token-status-dialog.minimized .token-status-body {
+    display: none;
+}
+
+.token-status-content {
+    width: 100%;
+}
+
+.token-status-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    background: var(--bg-accent);
+    border-bottom: 1px solid var(--input-border);
+    border-radius: 8px 8px 0 0;
+}
+
+.token-status-header h3 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.token-status-minimize {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 4px;
+    transition: color 0.2s;
+}
+
+.token-status-minimize:hover {
+    color: var(--text-primary);
+}
+
+.token-status-body {
+    padding: 15px;
+}
+
+/* Model Capacity Visualization */
+.model-capacity {
+    margin-bottom: 15px;
+}
+
+.capacity-label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.capacity-bar-container {
+    position: relative;
+    padding-bottom: 20px;
+}
+
+.capacity-bar {
+    height: 8px;
+    background: var(--bg-accent);
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 8px 0;
+    position: relative;
+}
+
+.capacity-fill {
+    height: 100%;
+    background: var(--primary);
+    transition: width 0.3s ease;
+}
+
+.capacity-fill.warning {
+    background: var(--warning);
+}
+
+.capacity-fill.danger {
+    background: var(--danger);
+}
+
+.model-limits {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
+.limit-marker {
+    position: absolute;
+    transform: translateX(-50%);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    top: -16px;
+}
+
+/* Block Breakdown */
+.block-breakdown {
+    border-top: 1px solid var(--input-border);
+    padding: 12px;
+}
+
+.block-breakdown h4 {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin: 0 0 8px 0;
+}
+
+.block-list {
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.block-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px;
+    border-bottom: 1px solid var(--input-border);
+}
+
+.block-item:last-child {
+    border-bottom: none;
+}
+
+.block-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.block-name {
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 70%;
+}
+
+.block-tokens {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+.block-bar {
+    height: 4px;
+    background: var(--bg-accent);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.block-fill {
+    height: 100%;
+    background: var(--primary);
+    transition: width 0.3s ease;
+}
+
+.token-status-summary {
+    padding: 12px;
+    border-bottom: 1px solid var(--input-border);
+}
+
+.total-tokens {
+    font-size: 1rem;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+}

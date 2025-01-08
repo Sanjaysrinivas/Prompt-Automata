@@ -1,0 +1,275 @@
+{% macro reference_preview() %}
+<div class="reference-preview-component" id="referencePreview">
+    <div class="preview-header">
+        <h3>Reference Preview</h3>
+        <div class="reference-type-selector">
+            <select class="form-select" id="referenceTypeSelect">
+                <option value="">Select Reference Type</option>
+                <option value="file">File Reference</option>
+                <option value="api">API Reference</option>
+                <option value="variable">Variable Reference</option>
+                <option value="github">GitHub Issue</option>
+            </select>
+        </div>
+        <div class="validation-status">
+            <span class="status-icon" id="validationIcon"></span>
+            <span class="status-text" id="validationStatus">No reference selected</span>
+        </div>
+    </div>
+
+    <div class="preview-content">
+        <!-- GitHub Issue Preview -->
+        <div class="preview-section github-preview" id="githubPreviewSection" style="display: none;">
+            <div class="preview-toolbar">
+                <div class="form-group">
+                    <label for="githubIssueUrl">GitHub Issue URL</label>
+                    <input type="text" class="form-control" id="githubIssueUrl" 
+                           placeholder="https://github.com/owner/repo/issues/123"
+                           pattern="https:\/\/github\.com\/[\w-]+\/[\w-]+\/issues\/\d+"
+                           title="Please enter a valid GitHub issue URL">
+                    <small class="form-text text-muted">Enter the full URL of the GitHub issue</small>
+                </div>
+                <button class="refresh-btn" id="refreshGithubIssue" title="Refresh">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+            </div>
+            <div class="preview-window" id="githubIssueContent"></div>
+        </div>
+
+        <!-- File Preview -->
+        <div class="preview-section file-preview" id="filePreviewSection">
+            <div class="preview-toolbar">
+                <select class="syntax-selector" id="syntaxSelector">
+                    <option value="plain">Plain Text</option>
+                    <option value="python">Python</option>
+                    <option value="markdown">Markdown</option>
+                    <option value="json">JSON</option>
+                </select>
+                <button class="copy-btn" id="copyContent" title="Copy Content">
+                    <i class="fas fa-copy"></i>
+                </button>
+            </div>
+            <div class="preview-window" id="fileContent"></div>
+        </div>
+
+        <!-- API Preview -->
+        <div class="preview-section api-preview" id="apiPreviewSection">
+            <div class="preview-toolbar">
+                <div class="endpoint-info">
+                    <span class="endpoint-label">Endpoint:</span>
+                    <span class="endpoint-value" id="endpointUrl"></span>
+                </div>
+                <button class="refresh-btn" id="refreshApi" title="Refresh">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+            </div>
+            <div class="preview-window" id="apiContent"></div>
+            <div class="api-metadata" id="apiMetadata"></div>
+        </div>
+
+        <!-- Variable Preview -->
+        <div class="preview-section variable-preview" id="variablePreviewSection">
+            <div class="preview-toolbar">
+                <div class="variable-info">
+                    <label for="variableSelect">Select Variable:</label>
+                    <select class="form-select" id="variableSelect">
+                        <option value="">Choose a variable...</option>
+                    </select>
+                </div>
+                <span class="last-updated" id="variableLastUpdated"></span>
+            </div>
+            <div class="preview-window" id="variableContent"></div>
+        </div>
+    </div>
+
+    <div class="preview-footer">
+        <div class="error-message" id="previewError"></div>
+        <div class="loading-indicator" id="previewLoading">
+            <span class="spinner"></span>
+            <span class="loading-text">Loading preview...</span>
+        </div>
+    </div>
+</div>
+
+<style>
+.reference-preview-component {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin: 1rem 0;
+}
+
+.preview-header {
+    padding: 1rem;
+    border-bottom: 1px solid #ddd;
+}
+
+.preview-content {
+    padding: 1rem;
+}
+
+.preview-section {
+    display: none;
+}
+
+.preview-section.active {
+    display: block;
+}
+
+.preview-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    background: #f8f9fa;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+}
+
+.preview-window {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 1rem;
+    min-height: 100px;
+    max-height: 400px;
+    overflow-y: auto;
+    font-family: monospace;
+    white-space: pre-wrap;
+}
+
+.variable-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex: 1;
+}
+
+.variable-info label {
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+.variable-info select {
+    width: 100%;
+    max-width: 300px;
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+}
+
+.last-updated {
+    color: #6c757d;
+    font-size: 0.875rem;
+}
+
+.loading-indicator {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.loading-indicator.show {
+    display: flex;
+}
+
+.spinner {
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #3498db;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    animation: spin 1s linear infinite;
+    margin-right: 0.5rem;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.error-message {
+    display: none;
+    color: #dc3545;
+    padding: 1rem;
+    margin-top: 1rem;
+    border: 1px solid #dc3545;
+    border-radius: 4px;
+    background-color: #f8d7da;
+}
+
+.temporary-message {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #28a745;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 4px;
+    animation: fadeOut 2s forwards;
+}
+
+@keyframes fadeOut {
+    0% { opacity: 1; }
+    70% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+.preview-header h3 {
+    margin: 0 0 1rem 0;
+}
+
+.reference-type-selector {
+    margin-bottom: 1rem;
+}
+
+.reference-type-selector select {
+    width: 100%;
+    max-width: 300px;
+}
+
+.validation-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.status-icon {
+    font-size: 1.25rem;
+}
+
+.status-icon.valid {
+    color: #28a745;
+}
+
+.status-icon.invalid {
+    color: #dc3545;
+}
+
+/* Make sure the variable section shows when active */
+#variablePreviewSection.active {
+    display: block !important;
+}
+
+/* Style the variable select dropdown */
+#variableSelect {
+    display: block;
+    width: 100%;
+    max-width: 300px;
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    margin-bottom: 1rem;
+}
+</style>
+{% endmacro %}

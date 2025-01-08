@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}New Prompt - Prompt Automata{% endblock %}
+
+{% block extra_css %}
+<link href="https://cdn.jsdelivr.net/npm/codemirror@5.65.2/lib/codemirror.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/codemirror@5.65.2/theme/monokai.css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <h1 class="text-3xl font-bold mb-8">Create New Prompt</h1>
+    
+    <div class="bg-white shadow-lg rounded-lg p-6">
+        <form id="promptForm" class="space-y-6">
+            <div>
+                <label for="prompt-title" class="block text-sm font-medium text-gray-700">Title</label>
+                <input type="text" name="title" id="prompt-title" required
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+            </div>
+
+            <div>
+                <label for="prompt-editor" class="block text-sm font-medium text-gray-700">Content</label>
+                <div class="mt-1 relative">
+                    <textarea id="prompt-editor" name="content" rows="10" required
+                        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"></textarea>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-4">
+                <button type="button" id="preview-btn"
+                    class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Preview
+                </button>
+                <button type="button" id="save-btn"
+                    class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Save Prompt
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- File Browser -->
+    <div id="file-browser" class="mt-8 bg-white shadow-lg rounded-lg p-6">
+        <h2 class="text-xl font-semibold mb-4">Available Files</h2>
+        <div class="space-y-2">
+            {% for file in files %}
+            <div class="file-item cursor-pointer hover:bg-gray-100 p-2 rounded" data-path="{{ file.path }}">
+                {{ file.name }}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.2/lib/codemirror.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.2/mode/markdown/markdown.js"></script>
+<script src="{{ url_for('static', filename='js/prompt-editor.js') }}"></script>
+{% endblock %}

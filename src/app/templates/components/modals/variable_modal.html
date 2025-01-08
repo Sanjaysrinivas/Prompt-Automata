@@ -1,0 +1,26 @@
+<!-- Variable Modal Component -->
+<div id="variable-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="variable-modal-title">Add Variable</h2>
+            <span class="close" onclick="hideModal('variable-modal')">&times;</span>
+        </div>
+        <div class="modal-body">
+            <form id="variable-form">
+                <input type="hidden" id="variable-id">
+                <div class="form-group">
+                    <label for="variable-name">Variable Name:</label>
+                    <input type="text" id="variable-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="variable-value">Value:</label>
+                    <input type="text" id="variable-value" required>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="admin-button" onclick="hideModal('variable-modal')">Cancel</button>
+            <button type="button" class="admin-button admin-button-primary" onclick="saveVariable()">Save</button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,30 @@
+.reference-valid {
+    display: inline-block;
+    margin-left: 4px;
+    color: #10B981;  /* Green color for success */
+    font-size: 14px;
+    opacity: 0;
+    animation: fadeInOut 2s ease-in-out;
+}
+
+.token-count {
+    font-size: 0.875rem;
+    color: #6B7280;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    background-color: #F3F4F6;
+    display: inline-block;
+    margin-top: 0.5rem;
+}
+
+.token-count.error {
+    color: #DC2626;
+    background-color: #FEE2E2;
+}
+
+@keyframes fadeInOut {
+    0% { opacity: 0; }
+    20% { opacity: 1; }
+    80% { opacity: 1; }
+    100% { opacity: 0; }
+}

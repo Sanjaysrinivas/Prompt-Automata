@@ -1,0 +1,48 @@
+<!-- Token Counter Card -->
+<div class="token-counter-section mb-6" data-token-counter>
+    <div class="bg-white shadow-sm rounded-lg p-4 border border-gray-200">
+        <div class="flex items-center mb-4">
+            <i class="fas fa-calculator text-gray-500 mr-2"></i>
+            <span class="text-sm font-medium text-gray-700">Total Tokens:</span>
+            <span class="total-token-count text-lg font-semibold text-indigo-600 ml-2" data-total-tokens>0</span>
+            <button type="button" id="global-refresh-btn"
+                    class="ml-2 p-1 text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 rounded">
+                <i class="fas fa-sync-alt"></i>
+            </button>
+        </div>
+        <div class="space-y-2">
+            <!-- Gemini Pro -->
+            <div class="flex items-center justify-between">
+                <span class="text-xs text-gray-600">Gemini Pro</span>
+                <span class="model-count text-xs text-gray-600" data-model="gemini">0 / 200K (0%)</span>
+            </div>
+            <div class="relative pt-1">
+                <div class="overflow-hidden h-2 text-xs flex rounded bg-gray-200">
+                    <div class="capacity-fill model-bar shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-indigo-500" data-model="gemini" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- GPT-01 Preview -->
+            <div class="flex items-center justify-between mt-2">
+                <span class="text-xs text-gray-600">GPT-4</span>
+                <span class="model-count text-xs text-gray-600" data-model="gpt">0 / 128K (0%)</span>
+            </div>
+            <div class="relative pt-1">
+                <div class="overflow-hidden h-2 text-xs flex rounded bg-gray-200">
+                    <div class="capacity-fill model-bar shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-indigo-500" data-model="gpt" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- Claude 3.5 Sonnet -->
+            <div class="flex items-center justify-between mt-2">
+                <span class="text-xs text-gray-600">Claude 3.5 Sonnet</span>
+                <span class="model-count text-xs text-gray-600" data-model="claude">0 / 200K (0%)</span>
+            </div>
+            <div class="relative pt-1">
+                <div class="overflow-hidden h-2 text-xs flex rounded bg-gray-200">
+                    <div class="capacity-fill model-bar shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-indigo-500" data-model="claude" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

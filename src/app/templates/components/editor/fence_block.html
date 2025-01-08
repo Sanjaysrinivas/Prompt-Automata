@@ -1,0 +1,116 @@
+<!-- Individual Fence Block Template -->
+<div class="fence-block bg-white shadow-sm rounded-lg p-4 border border-gray-200" 
+    data-position="{{ position if position is defined else 0 }}"
+    data-block-id="{{ fence.id if fence is defined and fence.id else '' }}"
+    id="{{ fence.id if fence is defined and fence.id else '' }}">
+    <div class="fence-header flex items-center space-x-4 mb-4">
+        <div class="flex-1">
+            <input type="text" 
+                class="fence-name block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" 
+                name="fences[{{ position if position is defined else 0 }}][name]"
+                placeholder="Fence Name" 
+                value="{{ fence.name if fence is defined and fence.name else '' }}">
+            <div class="validation-error text-red-500 text-sm mt-1 hidden"></div>
+        </div>
+        <div class="w-48">
+            <select class="fence-format block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                name="fences[{{ position if position is defined else 0 }}][format]">
+                <option value="xml_tags" {% if fence is defined and fence.format == 'xml_tags' %}selected{% endif %}>XML Tags</option>
+                <option value="triple_quotes" {% if fence is defined and fence.format == 'triple_quotes' %}selected{% endif %}>Triple Quotes</option>
+                <option value="curly_braces" {% if fence is defined and fence.format == 'curly_braces' %}selected{% endif %}>Curly Braces</option>
+                <option value="markdown" {% if fence is defined and fence.format == 'markdown' %}selected{% endif %}>Markdown</option>
+            </select>
+        </div>
+        <div class="fence-controls flex items-center space-x-3">
+            <!-- Modern Token Display -->
+            <div class="token-display-wrapper relative group">
+                <div class="token-count-summary flex items-center space-x-2 cursor-pointer rounded-lg px-3 py-2 transition-colors hover:bg-gray-50"
+                     data-tooltip="Click for token details">
+                    <i class="fas fa-calculator text-gray-500"></i>
+                    <span class="total-token-count font-medium text-gray-900">0</span>
+                    <span class="text-gray-500 text-sm">tokens</span>
+                </div>
+                
+                <!-- Hoverable Token Panel -->
+                <div class="token-panel hidden absolute right-0 top-full mt-2 bg-white rounded-lg shadow-xl border border-gray-200 p-4 w-80 z-50">
+                    <!-- Panel Header -->
+                    <div class="flex justify-between items-center mb-3 pb-2 border-b border-gray-100">
+                        <h3 class="font-semibold text-gray-800">Token Usage</h3>
+                        <button class="close-panel text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-50 transition-colors">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Token Breakdown -->
+                    <div class="space-y-2.5 mb-4">
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="text-gray-600">Content</span>
+                            <span class="fence-token-count font-medium text-gray-900">0</span>
+                        </div>
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="text-gray-600">References</span>
+                            <span class="reference-token-count font-medium text-gray-900">0</span>
+                        </div>
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="text-gray-600">Files</span>
+                            <span class="file-token-count font-medium text-gray-900">0</span>
+                        </div>
+                        <div class="border-t border-gray-100 pt-2 flex justify-between items-center">
+                            <span class="font-medium text-gray-800">Total</span>
+                            <span class="total-token-count font-medium text-gray-900">0</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Model Capacity Section -->
+                    <div class="space-y-3">
+                        <h4 class="text-sm font-medium text-gray-700">Model Capacities</h4>
+                        <div class="model-capacity-bars space-y-3">
+                            <!-- Bars will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Save to Library -->
+            <div class="save-to-library flex items-center" title="Save to Block Library">
+                <input type="checkbox" 
+                    class="save-to-library-checkbox h-4 w-4 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500"
+                    id="saveToLibrary_{{ position if position is defined else 0 }}"
+                >
+                <label for="saveToLibrary_{{ position if position is defined else 0 }}" class="ml-2 text-sm text-gray-700 whitespace-nowrap">
+                    Save to Library
+                </label>
+            </div>
+
+            <!-- Action Buttons -->
+            <button type="button" 
+                class="block-refresh-btn ml-2 text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 rounded-lg" 
+                title="Refresh block tokens">
+                <i class="fas fa-sync-alt"></i>
+            </button>
+
+            <div class="flex items-center space-x-2">
+                <button type="button" 
+                    class="insert-reference-btn p-2 text-gray-500 hover:text-indigo-600 hover:bg-gray-50 rounded-lg transition-colors" 
+                    title="Insert Reference">
+                    <i class="fas fa-link"></i>
+                </button>
+                <button type="button" 
+                    class="insert-file-btn p-2 text-gray-500 hover:text-indigo-600 hover:bg-gray-50 rounded-lg transition-colors" 
+                    title="Insert File">
+                    <i class="fas fa-file-upload"></i>
+                </button>
+                <button type="button" 
+                    class="delete-fence p-2 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" 
+                    title="Delete Fence">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Editor Area -->
+    <div class="fence-content">
+        <textarea class="fence-content-editor hidden">{{ fence.content if fence is defined and fence.content else '' }}</textarea>
+    </div>
+</div>

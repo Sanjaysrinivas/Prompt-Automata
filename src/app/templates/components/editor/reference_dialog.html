@@ -1,0 +1,151 @@
+<!-- Reference Dialog Template -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/fence.css') }}">
+<div id="reference-dialog" 
+    class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" 
+    data-admin-token="{{ admin_token }}"
+
+>
+    <div class="bg-white rounded-lg shadow-lg max-w-2xl w-full mx-4">
+        <!-- Dialog Header -->
+        <div class="flex items-center justify-between p-4 border-b">
+            <h3 class="text-lg font-medium">Insert Reference</h3>
+            <button type="button" class="close-dialog text-gray-400 hover:text-gray-600">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <!-- Dialog Content -->
+        <div class="p-4 space-y-4">
+            <!-- Reference Type Selection -->
+            <div>
+                <label for="reference-type" class="block text-sm font-medium text-gray-700">Reference Type</label>
+                <select id="reference-type" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                    <option value="">Select type...</option>
+                    <option value="var">Variable</option>
+                    <option value="api">API Endpoint</option>
+                    <option value="file">File/Directory</option>
+                    <option value="github">GitHub Issue</option>
+                </select>
+            </div>
+            <!-- Variable Input Section (hidden by default) -->
+            <div id="variable-input" class="hidden">
+                <div class="space-y-4">
+                    <div>
+                        <label for="variable-select" class="block text-sm font-medium text-gray-700">Select Variable</label>
+                        <select id="variable-select" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                            <option value="">Select variable...</option>
+                        </select>
+                    </div>
+                    <div id="variable-value-container" class="hidden">
+                        <label class="block text-sm font-medium text-gray-700">Variable Value</label>
+                        <div id="variable-value" class="mt-1 p-2 border rounded-md bg-gray-50 text-sm"></div>
+                        <div id="variable-token-count" class="token-count hidden"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GitHub Issue Title Input (hidden by default) -->
+            <div id="github-title-input" class="hidden">
+                <label for="github-title" class="block text-sm font-medium text-gray-700">Repository URL</label>
+                <div class="mt-1 flex rounded-md shadow-sm">
+                    <input type="text" id="github-title" class="flex-1 min-w-0 block w-full px-3 py-2 rounded-none rounded-l-md focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300" placeholder="e.g., https://github.com/microsoft/vscode">
+                    <button type="button" id="github-go-button" class="inline-flex items-center px-4 py-2 border border-l-0 border-gray-300 rounded-r-md bg-indigo-600 text-white text-sm hover:bg-indigo-700">
+                        <span id="github-go-text">Go</span>
+                        <span id="github-go-loading" class="hidden">
+                            <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                        </span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- GitHub Issues Container (hidden by default) -->
+            <div id="github-issues-container" class="hidden mt-4">
+                <label for="github-issues" class="block text-sm font-medium text-gray-700">Select Issue</label>
+                <select id="github-issues" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                    <option value="">Select an issue...</option>
+                </select>
+            </div>
+
+            <!-- File Path Input (hidden by default) -->
+            <div id="file-path-input" class="hidden">
+                <div class="mb-3">
+                    <label for="filePathInput" class="form-label">Path Validation:</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="filePathInput" placeholder="Enter file path">
+                        <input type="file" id="filePickerInput" style="display: none;" nwdirectory>
+                        <button class="btn btn-outline-secondary" type="button" id="browseFolderBtn">
+                            <i class="fas fa-folder-open"></i> Browse
+                        </button>
+                    </div>
+                    <div id="file-path-validation" class="hidden mt-2 text-sm flex items-center">
+                        <span id="validation-icon" class="mr-2"></span>
+                        <span id="validation-message"></span>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="selectedFileInput" class="form-label">Selected File:</label>
+                    <input type="text" class="form-control" id="selectedFileInput" placeholder="No file selected" readonly>
+                    <!-- File Validation Feedback -->
+                    <div id="file-validation" class="hidden mt-2 text-sm">
+                        <span id="file-validation-message"></span>
+                    </div>
+                </div>
+                <div id="fileTreePreview" class="mt-2 p-2 border rounded" style="max-height: 200px; overflow-y: auto; font-family: monospace; display: none;"></div>
+            </div>
+
+            <!-- GitHub Reference Section (hidden by default) -->
+            <div id="github-reference-section" class="hidden">
+                <div class="space-y-4">
+                    <div>
+                        <label for="repo-url" class="block text-sm font-medium text-gray-700">GitHub Repository URL</label>
+                        <div class="mt-1 flex rounded-md shadow-sm">
+                            <input type="text" id="repo-url" class="flex-1 min-w-0 block w-full px-3 py-2 rounded-l-md focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300" placeholder="https://github.com/owner/repo">
+                            <button type="button" id="fetch-issues" class="inline-flex items-center px-4 py-2 border border-l-0 border-gray-300 rounded-r-md bg-indigo-600 text-white text-sm hover:bg-indigo-700">
+                                Fetch Issues
+                            </button>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="issue-select" class="block text-sm font-medium text-gray-700">Select Issue</label>
+                        <select id="issue-select" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" disabled>
+                            <option value="">Loading issues...</option>
+                        </select>
+                    </div>
+                    <div id="issue-preview" class="hidden mt-4 p-4 bg-gray-50 rounded-md">
+                        <h5 class="issue-title text-lg font-medium"></h5>
+                        <div class="flex items-center mt-2">
+                            <span class="issue-state px-2 py-1 text-sm font-medium rounded-full"></span>
+                            <span class="issue-dates ml-4 text-sm text-gray-500"></span>
+                        </div>
+                        <div class="issue-description mt-4 text-sm text-gray-700 whitespace-pre-wrap"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reference Preview -->
+            <div id="reference-preview" class="mt-4 p-4 bg-gray-50 rounded-md hidden">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-sm font-medium text-gray-700">Preview</span>
+                    <div class="flex items-center space-x-2">
+                        <span id="validation-status" class="text-sm"></span>
+                        <i id="validation-icon" class="fas"></i>
+                    </div>
+                </div>
+                <div id="preview-content" class="text-sm font-mono bg-white p-2 rounded border border-gray-200"></div>
+            </div>
+        </div>
+
+        <!-- Dialog Footer -->
+        <div class="flex items-center justify-end px-4 py-3 bg-gray-50 border-t rounded-b-lg space-x-2">
+            <button type="button" class="close-dialog px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-500">
+                Cancel
+            </button>
+            <button type="button" id="insert-reference" class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-md disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                Insert
+            </button>
+        </div>
+    </div>
+</div>

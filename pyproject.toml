@@ -1,0 +1,103 @@
+[tool.poetry]
+name = "prompt-automata"
+version = "0.1.0"
+description = "A tool for creating parameterized fenced prompts for LLMs"
+authors = ["Your Name <your.email@example.com>"]
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.10"
+flask = {version = "^2.3.3", extras = ["async"]}
+flask-sqlalchemy = "^3.1.1"
+jinja2 = "^3.1.2"
+gitpython = "^3.1.32"
+python-dotenv = "^1.0.0"
+werkzeug = "^2.3.7"
+flask-migrate = "4.0.5"
+httpx = "^0.25.0"
+asgiref = "^3.7.2"
+aiohttp = "^3.8.5"
+requests = "^2.32.3"
+litellm = "^1.54.0"
+bcrypt = "^4.2.1"
+hypercorn = "^0.17.3"
+flask-session = "0.5.0"
+cryptography = "41.0.7"
+pygithub = "2.1.1"
+flask-login = "^0.6.3"
+flask-limiter = "^3.9.2"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.0"
+ruff = "^0.0.287"
+black = "^23.7.0"
+pre-commit = "^4.0.1"
+mkdocs = "^1.6.1"
+mkdocs-material = "^9.5.49"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+src = ["src"]
+namespace-packages = ["src/app"]
+
+[tool.ruff.lint]
+select = [
+    "E",
+    "F",
+    "I",
+    "N",
+    "W",
+    "B",
+    "UP",
+    "ASYNC",
+    "S",
+    "BLE",
+    "FBT",
+    "C4",
+    "DTZ",
+    "T10",
+    "EM",
+    "ISC",
+    "ICN",
+    "G",
+    "INP",
+    "PIE",
+    "T20",
+    "PYI",
+    "PT",
+    "Q",
+    "RSE",
+    "RET",
+    "SLF",
+    "SLOT",
+    "SIM",
+    "TID",
+    "TCH",
+    "INT",
+    "ARG",
+    "PTH",
+    "PD",
+    "PGH",
+    "PL",
+    "TRY",
+    "RUF",
+]
+ignore = ["S311","E501"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
+force-wrap-aliases = true
+known-first-party = ["prompt_automata"]
+required-imports = ["from __future__ import annotations"]

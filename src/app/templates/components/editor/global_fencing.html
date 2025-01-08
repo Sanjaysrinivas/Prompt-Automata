@@ -1,0 +1,29 @@
+<!-- Global Fencing Controls -->
+<div class="bg-gray-50 p-4 rounded-lg mb-6">
+    <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-4">
+            <div class="flex items-center">
+                <input type="checkbox" id="use-global-fencing" 
+                    class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                <label for="use-global-fencing" class="ml-2 text-sm font-medium text-gray-700">
+                    Use Global Fencing
+                </label>
+            </div>
+            <select id="global-fence-format" 
+                class="hidden mt-1 block w-48 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                disabled>
+                <option value="xml_tags">XML Tags</option>
+                <option value="triple_quotes">Triple Quotes</option>
+                <option value="curly_braces">Curly Braces</option>
+                <option value="markdown">Markdown</option>
+            </select>
+        </div>
+        <div class="text-sm text-gray-500">
+            <i class="fas fa-info-circle mr-1"></i>
+            Global fencing will override individual fence formats
+        </div>
+    </div>
+    <p class="mt-2 text-sm text-gray-500">
+        Note: When using XML tags format, tags will be applied to fence names instead of content
+    </p>
+</div>

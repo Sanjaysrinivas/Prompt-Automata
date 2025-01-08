@@ -1,0 +1,31 @@
+<!-- Endpoint Modal Component -->
+<div id="endpoint-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="endpoint-modal-title">Add Endpoint</h2>
+            <span class="close" onclick="hideModal('endpoint-modal')">&times;</span>
+        </div>
+        <div class="modal-body">
+            <form id="endpoint-form">
+                <input type="hidden" id="endpoint-id">
+                <div class="form-group">
+                    <label for="endpoint-path">Endpoint Path:</label>
+                    <input type="text" id="endpoint-path" required>
+                </div>
+                <div class="form-group">
+                    <label for="endpoint-method">HTTP Method:</label>
+                    <select id="endpoint-method" required>
+                        <option value="GET">GET</option>
+                        <option value="POST">POST</option>
+                        <option value="PUT">PUT</option>
+                        <option value="DELETE">DELETE</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="admin-button" onclick="hideModal('endpoint-modal')">Cancel</button>
+            <button type="button" class="admin-button admin-button-primary" onclick="saveEndpoint()">Save</button>
+        </div>
+    </div>
+</div>

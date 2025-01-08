@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}About - Prompt Automata{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+        <div class="px-6 py-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-6">About Prompt Automata</h1>
+            
+            <div class="prose max-w-none">
+                <p class="mb-6">
+                    Prompt Automata is a powerful tool designed to help developers create, manage, and share parameterized
+                    prompts for Large Language Models (LLMs). By integrating directly with your codebase, it enables you to
+                    create context-aware prompts that automatically update as your code evolves.
+                </p>
+
+                <h2 class="text-2xl font-semibold text-gray-900 mt-8 mb-4">Key Features</h2>
+                <ul class="list-disc pl-6 mb-6">
+                    <li class="mb-2">
+                        <strong>File References:</strong> Easily include code snippets and documentation in your prompts
+                        using the @[file] syntax.
+                    </li>
+                    <li class="mb-2">
+                        <strong>Git Integration:</strong> Automatically track which version of your code was referenced
+                        in each prompt.
+                    </li>
+                    <li class="mb-2">
+                        <strong>Template Library:</strong> Save and reuse your most effective prompts to maintain
+                        consistency across your projects.
+                    </li>
+                    <li class="mb-2">
+                        <strong>Modern Interface:</strong> A clean, intuitive interface built with Tailwind CSS for a
+                        great user experience.
+                    </li>
+                </ul>
+
+                <h2 class="text-2xl font-semibold text-gray-900 mt-8 mb-4">How It Works</h2>
+                <ol class="list-decimal pl-6 mb-6">
+                    <li class="mb-2">Create a new prompt using the editor</li>
+                    <li class="mb-2">Reference files from your workspace using @[filename]</li>
+                    <li class="mb-2">Add instructions and context around your file references</li>
+                    <li class="mb-2">Save your prompt to the library for future use</li>
+                    <li class="mb-2">Share prompts with your team to maintain consistency</li>
+                </ol>
+
+                <h2 class="text-2xl font-semibold text-gray-900 mt-8 mb-4">Technology Stack</h2>
+                <ul class="list-disc pl-6 mb-6">
+                    <li class="mb-2">
+                        <strong>Flask:</strong> A lightweight Python web framework that powers the backend
+                    </li>
+                    <li class="mb-2">
+                        <strong>SQLite:</strong> A reliable, file-based database for storing prompts
+                    </li>
+                    <li class="mb-2">
+                        <strong>GitPython:</strong> For seamless Git integration and version tracking
+                    </li>
+                    <li class="mb-2">
+                        <strong>Tailwind CSS:</strong> A utility-first CSS framework for beautiful UI
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

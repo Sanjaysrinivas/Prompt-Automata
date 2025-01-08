@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Prompt Automata{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <div class="text-center mb-12">
+        <h1 class="text-4xl font-bold text-gray-900 mb-4">Welcome to Prompt Automata</h1>
+        <p class="text-xl text-gray-600">Create, manage, and share parameterized prompts for Large Language Models</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h2 class="text-2xl font-semibold text-gray-900 mb-4">Create New Prompt</h2>
+            <p class="text-gray-600 mb-4">Start crafting your prompt with support for file references and Git metadata tracking.</p>
+            <a href="{{ url_for('prompts.new_prompt') }}"
+                class="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700">
+                Get Started
+            </a>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h2 class="text-2xl font-semibold text-gray-900 mb-4">Browse Library</h2>
+            <p class="text-gray-600 mb-4">Access your saved prompts and templates for quick reuse.</p>
+            <a href="{{ url_for('prompts.list_prompts') }}"
+                class="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700">
+                View Library
+            </a>
+        </div>
+    </div>
+
+    <div class="bg-gray-50 rounded-lg shadow-lg p-6">
+        <h2 class="text-2xl font-semibold text-gray-900 mb-4">Features</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <h3 class="text-lg font-medium text-gray-900 mb-2">File References</h3>
+                <p class="text-gray-600">Easily reference files and code snippets in your prompts.</p>
+            </div>
+            <div>
+                <h3 class="text-lg font-medium text-gray-900 mb-2">Git Integration</h3>
+                <p class="text-gray-600">Track prompt versions alongside your code changes.</p>
+            </div>
+            <div>
+                <h3 class="text-lg font-medium text-gray-900 mb-2">Template Library</h3>
+                <p class="text-gray-600">Save and reuse your most effective prompts.</p>
+            </div>
+            <div>
+                <h3 class="text-lg font-medium text-gray-900 mb-2">API Integration</h3>
+                <p class="text-gray-600">Connect with various LLM providers through API keys.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

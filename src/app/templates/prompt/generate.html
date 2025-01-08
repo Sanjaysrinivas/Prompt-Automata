@@ -1,0 +1,257 @@
+{% extends "base.html" %}
+
+{% block title %}Generate Prompt - Prompt Automata{% endblock %}
+
+{% block extra_css %}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+        .retro-container {
+            background: #0a0a0a;
+            border: 2px solid #00ff00;
+            box-shadow: 0 0 10px #00ff00;
+            border-radius: 10px;
+            padding: 2rem;
+            margin: 2rem auto;
+            max-width: 1200px;
+        }
+
+        .retro-text {
+            font-family: 'VT323', monospace;
+            color: #00ff00;
+            text-shadow: 0 0 5px #00ff00;
+        }
+
+        .retro-title {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            letter-spacing: 2px;
+        }
+
+        .retro-input {
+            font-family: 'Share Tech Mono', monospace;
+            background: #000;
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            padding: 1rem;
+            width: 100%;
+            height: 200px;
+            resize: none;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            line-height: 1.4;
+            box-shadow: inset 0 0 10px rgba(0, 255, 0, 0.2);
+        }
+
+        .retro-output {
+            font-family: 'Share Tech Mono', monospace;
+            background: #000;
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            padding: 1rem;
+            width: 100%;
+            height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            position: relative;
+        }
+
+        .retro-output.generating::after {
+            content: '▮';
+            animation: blink 1s infinite;
+        }
+
+        .provider-select {
+            background: #000;
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            padding: 0.5rem;
+            font-family: 'Share Tech Mono', monospace;
+            margin-bottom: 1rem;
+            width: 200px;
+        }
+
+        .retro-button {
+            background: #000;
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            padding: 0.5rem 1rem;
+            font-family: 'Share Tech Mono', monospace;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .retro-button:hover {
+            background: #00ff00;
+            color: #000;
+        }
+
+        .retro-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .token-status {
+            font-family: 'Share Tech Mono', monospace;
+            color: #00ff00;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .stats {
+            font-family: 'Share Tech Mono', monospace;
+            color: #00ff00;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .scanline {
+            width: 100%;
+            height: 100px;
+            z-index: 8;
+            background: linear-gradient(
+                0deg,
+                rgba(0, 255, 0, 0) 0%,
+                rgba(0, 255, 0, 0.1) 10%,
+                rgba(0, 255, 0, 0.2) 100%
+            );
+            opacity: 0.1;
+            position: absolute;
+            bottom: 100%;
+            animation: scanline 8s linear infinite;
+        }
+
+        @keyframes scanline {
+            0% { bottom: 100%; }
+            80% { bottom: -50%; }
+            100% { bottom: -50%; }
+        }
+
+
+        @keyframes glitch {
+            2%, 64% { transform: translate(2px,0) skew(0deg); }
+            4%, 60% { transform: translate(-2px,0) skew(0deg); }
+            62% { transform: translate(0,0) skew(5deg); }
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="retro-container">
+    <h1 class="retro-title retro-text glitch">TERMINAL</h1>
+    
+    <div class="mb-4">
+        <div id="output" class="retro-output mb-4" data-prompt-id="{{ prompt.id }}" data-provider="{{ prompt.provider }}" data-model="{{ prompt.model }}"></div>
+        <div class="flex justify-end space-x-4">
+            <button id="copy-output" class="retro-button">
+                <i class="fas fa-copy mr-2"></i>Copy Output
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const outputDiv = document.getElementById('output');
+            const copyButton = document.getElementById('copy-output');
+            
+            // Get prompt data from the server-side rendered template
+            const promptData = {
+                id: {{ prompt.id }},
+                provider: "{{ prompt.provider }}",
+                model: "{{ prompt.model }}"
+            };
+            
+            console.log('Prompt data:', promptData);
+            
+            // Handle copy button click
+            copyButton.addEventListener('click', function() {
+                const outputText = outputDiv.textContent;
+                navigator.clipboard.writeText(outputText).then(() => {
+                    const originalText = copyButton.innerHTML;
+                    copyButton.innerHTML = '<i class="fas fa-check mr-2"></i>Copied!';
+                    setTimeout(() => {
+                        copyButton.innerHTML = originalText;
+                    }, 2000);
+                }).catch(err => {
+                    console.error('Failed to copy text: ', err);
+                    alert('Failed to copy text to clipboard');
+                });
+            });
+
+            // Function to generate prompt response
+            async function generatePromptResponse() {
+                try {
+                    outputDiv.textContent = ''; // Clear previous output
+                    outputDiv.classList.add('generating');
+
+                    console.log('Generating response for prompt:', promptData);
+
+                    const response = await fetch(`/prompts/generate/${promptData.id}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            provider: promptData.provider,
+                            model: promptData.model
+                        })
+                    });
+
+                    console.log('Response status:', response.status);
+
+                    if (!response.ok) {
+                        const error = await response.json();
+                        console.error('Response error:', error);
+                        throw new Error(error.error || 'Failed to generate response');
+                    }
+
+                    const reader = response.body.getReader();
+                    const decoder = new TextDecoder();
+
+                    while (true) {
+                        const { value, done } = await reader.read();
+                        if (done) break;
+
+                        const text = decoder.decode(value);
+                        const lines = text.split('\n');
+
+                        for (const line of lines) {
+                            if (line.startsWith('data: ')) {
+                                const data = line.slice(6);
+                                console.log('Received data:', data);
+                                if (data === '[DONE]') {
+                                    outputDiv.classList.remove('generating');
+                                    break;
+                                }
+                                if (data.startsWith('Error: ')) {
+                                    throw new Error(data.slice(7));
+                                }
+                                outputDiv.textContent += data;
+                            }
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error generating response:', error);
+                    outputDiv.classList.remove('generating');
+                    outputDiv.textContent = `Error: ${error.message}`;
+                }
+            }
+
+            // Call generatePromptResponse when the page loads
+            generatePromptResponse();
+        });
+    </script>
+{% endblock %}

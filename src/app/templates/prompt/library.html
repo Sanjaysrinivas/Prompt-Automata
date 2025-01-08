@@ -1,0 +1,426 @@
+{% extends "base.html" %}
+
+{% block title %}Prompt Library - Prompt Automata{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <div class="flex justify-between items-center mb-8">
+        <h1 class="text-3xl font-bold text-gray-900">Prompt Library</h1>
+        <div class="flex space-x-4">
+            <div class="relative">
+                <input type="text" id="search-input" placeholder="Search prompts..."
+                    class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+                    </svg>
+                </div>
+            </div>
+            <a href="{{ url_for('prompts.new_prompt') }}"
+                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700">
+                New Prompt
+            </a>
+        </div>
+    </div>
+
+    <!-- Tag filter section -->
+    <div class="mb-4 bg-white p-4 rounded-lg shadow">
+        <h2 class="text-sm font-medium text-gray-700 mb-2">Filter by tags:</h2>
+        <div class="flex flex-wrap gap-2" id="tag-filters">
+            <!-- Tags will be dynamically generated -->
+        </div>
+    </div>
+
+    {% if prompts %}
+    <div class="bg-white shadow overflow-hidden sm:rounded-md">
+        <ul class="divide-y divide-gray-200">
+            {% for prompt in prompts %}
+            <li class="prompt-item" data-id="{{ prompt.id }}">
+                <div class="block hover:bg-gray-50">
+                    <div class="px-4 py-4 sm:px-6">
+                        <div class="flex items-center justify-between">
+                            <p class="text-lg font-medium text-indigo-600 truncate cursor-pointer hover:text-indigo-800" 
+                               onclick="previewPrompt({{ prompt.id }})">
+                                {{ prompt.title }}
+                            </p>
+                            <div class="ml-4 flex-shrink-0 flex space-x-2">
+                                <button onclick="previewPrompt({{ prompt.id }})"
+                                    class="inline-flex items-center px-3 py-1 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                                    <svg class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
+                                    Preview
+                                </button>
+                                <button onclick="editPrompt({{ prompt.id }})"
+                                    class="inline-flex items-center px-3 py-1 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                                    <svg class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                    </svg>
+                                    Edit
+                                </button>
+                                <button onclick="deletePrompt({{ prompt.id }})"
+                                    class="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700">
+                                    <svg class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                        <div class="mt-2 flex flex-wrap gap-2">
+                            {% if prompt.tags %}
+                                {% for tag in prompt.tags %}
+                                    <span data-tag="{{ tag }}" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                        {{ tag }}
+                                    </span>
+                                {% endfor %}
+                            {% endif %}
+                            {% if prompt.is_template %}
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                <svg class="h-2 w-2 mr-1.5" fill="currentColor" viewBox="0 0 8 8">
+                                    <circle cx="4" cy="4" r="3" />
+                                </svg>
+                                Template
+                            </span>
+                            {% endif %}
+                        </div>
+                        <div class="mt-2 text-sm text-gray-500 flex flex-wrap gap-2">
+                            <span class="inline-flex items-center">
+                                <svg class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                                Created: {{ prompt.created_at[:16] if prompt.created_at else 'N/A' }}
+                            </span>
+                            {% if prompt.updated_at and prompt.updated_at != prompt.created_at %}
+                            <span class="inline-flex items-center">
+                                <svg class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                </svg>
+                                Updated: {{ prompt.updated_at[:16] }}
+                            </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% if prompt.git_ref %}
+                    <div class="ml-4 flex-shrink-0">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                            Git: {{ prompt.git_ref[:7] }}
+                        </span>
+                    </div>
+                    {% endif %}
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% else %}
+    <div class="text-center py-12 bg-white shadow sm:rounded-lg">
+        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h10a2 2 0 012 2v16a2 2 0 01-2 2z" />
+        </svg>
+        <h3 class="mt-2 text-sm font-medium text-gray-900">No prompts</h3>
+        <p class="mt-1 text-sm text-gray-500">Get started by creating a new prompt.</p>
+        <div class="mt-6">
+            <a href="{{ url_for('prompts.new_prompt') }}"
+                class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
+                New Prompt
+            </a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/fence/fence-ui.js') }}" type="module"></script>
+<script src="{{ url_for('static', filename='js/fence/fence-format.js') }}" type="module"></script>
+<script type="module">
+    import { createModal, showSuccess, showError } from '/static/js/fence/fence-ui.js';
+
+    // Track selected tags
+    let selectedTags = new Set();
+    let allTags = new Set();
+
+    // Function to update the tag filter buttons
+    function updateTagFilters() {
+        const tagFiltersContainer = document.getElementById('tag-filters');
+        if (!tagFiltersContainer) {
+            console.error('Tag filters container not found');
+            return;
+        }
+
+        // Clear existing buttons
+        tagFiltersContainer.innerHTML = '';
+
+        // Sort tags alphabetically
+        const sortedTags = Array.from(allTags).sort();
+        
+        if (sortedTags.length === 0) {
+            const noTags = document.createElement('span');
+            noTags.className = 'text-sm text-gray-500';
+            noTags.textContent = 'No tags available';
+            tagFiltersContainer.appendChild(noTags);
+            return;
+        }
+
+        // Create buttons for each tag
+        sortedTags.forEach(tag => {
+            const tagButton = document.createElement('button');
+            tagButton.className = `inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                selectedTags.has(tag)
+                    ? 'bg-indigo-600 text-white hover:bg-indigo-700'
+                    : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
+            }`;
+            tagButton.textContent = tag;
+            tagButton.onclick = () => toggleTag(tag);
+            tagFiltersContainer.appendChild(tagButton);
+        });
+
+        // Log for debugging
+        console.log('Available tags:', sortedTags);
+        console.log('Selected tags:', Array.from(selectedTags));
+    }
+
+    // Function to toggle a tag's selected state
+    function toggleTag(tag) {
+        if (selectedTags.has(tag)) {
+            selectedTags.delete(tag);
+        } else {
+            selectedTags.add(tag);
+        }
+        updateTagFilters();
+        updatePromptVisibility();
+    }
+
+    // Function to update visibility of prompts based on filters
+    function updatePromptVisibility() {
+        const searchQuery = document.getElementById('search-input')?.value.toLowerCase() || '';
+        const promptItems = document.querySelectorAll('.prompt-item');
+
+        promptItems.forEach(item => {
+            const title = item.querySelector('.text-indigo-600')?.textContent.toLowerCase() || '';
+            const tags = Array.from(item.querySelectorAll('[data-tag]')).map(tag => tag.dataset.tag);
+            
+            const matchesSearch = title.includes(searchQuery);
+            const matchesTags = selectedTags.size === 0 || tags.some(tag => selectedTags.has(tag));
+
+            item.style.display = matchesSearch && matchesTags ? 'block' : 'none';
+        });
+    }
+
+    // Initialize tag filters and search on page load
+    document.addEventListener('DOMContentLoaded', () => {
+        // Collect all unique tags from the prompts
+        document.querySelectorAll('[data-tag]').forEach(tagElement => {
+            const tag = tagElement.dataset.tag;
+            if (tag) {
+                allTags.add(tag);
+                console.log('Added tag:', tag); // Debug log
+            }
+        });
+
+        // Log for debugging
+        console.log('Initializing with tags:', Array.from(allTags));
+
+        // Initialize tag filters
+        updateTagFilters();
+
+        // Initialize search functionality
+        const searchInput = document.getElementById('search-input');
+        if (searchInput) {
+            searchInput.addEventListener('input', updatePromptVisibility);
+        }
+    });
+
+    // Remove duplicate functions and variables
+    function updatePromptsList(prompts) {
+        // Implementation for updating the prompts list
+        // This would replace the current list with the search results
+    }
+
+    window.previewPrompt = async function(id) {
+        try {
+            const response = await fetch(`/prompts/${id}`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch prompt');
+            }
+            const prompt = await response.json();
+            
+            // Format the tags
+            const tagsHtml = prompt.tags && prompt.tags.length > 0 
+                ? prompt.tags.map(tag => `
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                        ${tag}
+                    </span>`).join('')
+                : '<span class="text-gray-500">No tags</span>';
+
+            // Format the preview content
+            let previewContent = '';
+            if (prompt.fences && prompt.fences.length > 0) {
+                prompt.fences.forEach(fence => {
+                    if (fence.content) {
+                        previewContent += `
+                            <div class="mb-6 bg-white rounded-lg border border-gray-200">
+                                <div class="px-4 py-2 border-b border-gray-200 bg-gray-50 rounded-t-lg">
+                                    <div class="flex items-center justify-between">
+                                        <h3 class="font-medium text-gray-700">${fence.name}</h3>
+                                        <span class="text-sm text-gray-500">${fence.format}</span>
+                                    </div>
+                                </div>
+                                <div class="p-4">
+                                    <pre class="whitespace-pre-wrap font-mono text-sm">${fence.content}</pre>
+                                </div>
+                            </div>`;
+                    }
+                });
+            } else {
+                previewContent = '<p class="text-gray-500">No fence blocks</p>';
+            }
+
+            // Create copy button with clipboard SVG icon
+            const copyButton = `
+                <button id="copyPreviewBtn" 
+                    class="p-2 text-gray-600 hover:text-blue-600 hover:bg-gray-100 rounded-full transition-colors" 
+                    title="Copy to Clipboard">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/>
+                    </svg>
+                </button>
+            `;
+
+            // Create modal with all prompt details
+            const modal = createModal({
+                title: prompt.title,
+                content: `
+                    <div class="space-y-6">
+                        <!-- Description -->
+                        <div>
+                            <h3 class="text-sm font-medium text-gray-700 mb-1">Description</h3>
+                            <p class="text-gray-600">${prompt.description || 'No description'}</p>
+                        </div>
+
+                        <!-- Tags -->
+                        <div>
+                            <h3 class="text-sm font-medium text-gray-700 mb-2">Tags</h3>
+                            <div class="flex flex-wrap gap-2">
+                                ${tagsHtml}
+                            </div>
+                        </div>
+
+                        <!-- Metadata -->
+                        <div class="flex flex-wrap gap-4 text-sm text-gray-500">
+                            <span>Created: ${new Date(prompt.created_at).toLocaleString()}</span>
+                            ${prompt.updated_at ? `<span>Updated: ${new Date(prompt.updated_at).toLocaleString()}</span>` : ''}
+                            ${prompt.is_template ? '<span class="text-green-600">Template</span>' : ''}
+                        </div>
+
+                        <!-- Fence Blocks -->
+                        <div>
+                            <h3 class="text-sm font-medium text-gray-700 mb-4">Fence Blocks</h3>
+                            ${previewContent}
+                        </div>
+                    </div>
+                `,
+                width: 'w-3/4',
+                maxHeight: 'max-h-[80vh]',
+                headerButtons: copyButton
+            });
+
+            modal.show();
+
+            // Add copy functionality
+            const copyBtn = document.getElementById('copyPreviewBtn');
+            if (copyBtn) {
+                copyBtn.addEventListener('click', async () => {
+                    try {
+                        // Format the content for copying
+                        const textContent = [
+                            `Title: ${prompt.title}`,
+                            `Description: ${prompt.description || 'No description'}`,
+                            `Tags: ${prompt.tags ? prompt.tags.join(', ') : 'No tags'}`,
+                            '\nFence Blocks:',
+                            ...prompt.fences.map(fence => 
+                                `\n[${fence.name}] (${fence.format})\n${fence.content}`
+                            )
+                        ].join('\n');
+
+                        await navigator.clipboard.writeText(textContent);
+                        showSuccess('Copied to clipboard!');
+                        
+                        // Visual feedback
+                        const icon = copyBtn.querySelector('svg');
+                        if (icon) {
+                            icon.style.stroke = '#059669';
+                        }
+                        copyBtn.classList.add('bg-green-50');
+                        
+                        setTimeout(() => {
+                            if (icon) {
+                                icon.style.stroke = 'currentColor';
+                            }
+                            copyBtn.classList.remove('bg-green-50');
+                        }, 2000);
+                    } catch (err) {
+                        console.error('Failed to copy:', err);
+                        showError('Failed to copy to clipboard');
+                    }
+                });
+            }
+        } catch (error) {
+            console.error('Error previewing prompt:', error);
+            showError('Failed to preview prompt');
+        }
+    };
+
+    // Make other functions global for onclick handlers
+    window.editPrompt = function(id) {
+        window.location.href = `/prompts/${id}/edit`;
+    };
+
+    window.deletePrompt = async function(id) {
+        if (!confirm('Are you sure you want to delete this prompt?')) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`/prompts/${id}`, {
+                method: 'DELETE',
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to delete prompt');
+            }
+
+            // Remove the prompt item from the DOM
+            const promptItem = document.querySelector(`[data-id="${id}"]`);
+            if (promptItem) {
+                promptItem.remove();
+            }
+            showSuccess('Prompt deleted successfully');
+        } catch (error) {
+            console.error('Error deleting prompt:', error);
+            showError('Failed to delete prompt');
+        }
+    };
+
+    // Search functionality
+    const searchInput = document.getElementById('search-input');
+    let searchTimeout;
+
+    searchInput.addEventListener('input', (e) => {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(async () => {
+            const query = e.target.value;
+            try {
+                const response = await fetch(`/prompts?q=${encodeURIComponent(query)}`);
+                const data = await response.json();
+                // Update the prompts list (you'll need to implement this)
+                updatePromptsList(data.prompts);
+            } catch (error) {
+                console.error('Error searching prompts:', error);
+            }
+        }, 300);
+    });
+</script>
+{% endblock %}

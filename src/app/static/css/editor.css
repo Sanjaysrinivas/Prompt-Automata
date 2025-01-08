@@ -1,0 +1,95 @@
+/* Editor specific styles */
+.editor-container {
+    @apply flex flex-col h-full;
+}
+
+.editor-toolbar {
+    @apply flex items-center gap-2 p-2 bg-gray-100 border-b border-gray-200;
+}
+
+.editor-toolbar button {
+    @apply px-3 py-1 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500;
+}
+
+.editor-main {
+    @apply flex flex-1 overflow-hidden;
+}
+
+.editor-content {
+    @apply flex-1 p-4;
+}
+
+.editor-sidebar {
+    @apply w-64 bg-gray-50 border-l border-gray-200 p-4 overflow-y-auto;
+}
+
+.editor-textarea {
+    @apply w-full h-full p-4 text-gray-900 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500;
+    min-height: 400px;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
+}
+
+.file-reference {
+    @apply inline-flex items-center px-2 py-1 rounded-md text-sm font-medium bg-blue-100 text-blue-800;
+}
+
+.file-reference:hover {
+    @apply bg-blue-200;
+}
+
+.file-browser {
+    @apply mt-4;
+}
+
+.file-browser-item {
+    @apply flex items-center gap-2 px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded-md cursor-pointer;
+}
+
+.file-browser-item.is-directory {
+    @apply font-medium;
+}
+
+.file-browser-item svg {
+    @apply w-4 h-4 text-gray-400;
+}
+
+.parameter-form {
+    @apply space-y-4 mt-4;
+}
+
+.parameter-form label {
+    @apply block text-sm font-medium text-gray-700;
+}
+
+.parameter-form input {
+    @apply mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm;
+}
+
+.parameter-list {
+    @apply space-y-2;
+}
+
+.parameter-item {
+    @apply flex items-center gap-2;
+}
+
+.parameter-item button {
+    @apply p-1 text-gray-400 hover:text-gray-500;
+}
+
+/* Syntax highlighting */
+.hljs {
+    @apply p-4 rounded-md bg-gray-800 text-gray-100;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .editor-main {
+        @apply flex-col;
+    }
+    
+    .editor-sidebar {
+        @apply w-full border-l-0 border-t;
+    }
+}
